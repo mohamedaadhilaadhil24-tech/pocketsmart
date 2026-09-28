@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}History — PocketSmart AI{% endblock %}
+
+{% block content %}
+<div class="page-head">
+  <div class="eyebrow"><span class="dot"></span> Records</div>
+  <h2>Recommendation history</h2>
+  <p>A complete log of your past queries and generated plans, available for review and reuse.</p>
+</div>
+
+{% if history %}
+<div class="table-wrap reveal">
+  <table>
+    <thead>
+      <tr><th style="width:52px">#</th><th>Domain</th><th>Budget</th><th>Items</th><th>Summary</th><th>Date</th></tr>
+    </thead>
+    <tbody>
+      {% for h in history %}
+      <tr>
+        <td class="muted mono">{{ "%02d"|format(loop.index) }}</td>
+        <td style="text-transform:capitalize;font-weight:550">{{ h.domain }}</td>
+        <td class="mono">₹{{ h.budget|inr }}</td>
+        <td class="mono">{{ h.item_count }}</td>
+        <td class="muted">{{ h.summary[:78] }}{% if h.summary|length > 78 %}…{% endif %}</td>
+        <td class="muted mono">{{ h.created_at[:10] }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="empty reveal">
+  <div class="ic">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 1.9"/></svg>
+  </div>
+  <h4>No history recorded</h4>
+  <p>Generated plans appear here automatically. Start with one of the planners:</p>
+  <div style="margin-top:20px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+    <a class="btn btn-ghost btn-sm" href="/planner/home">Home planner</a>
+    <a class="btn btn-ghost btn-sm" href="/planner/party">Party planner</a>
+    <a class="btn btn-ghost btn-sm" href="/planner/jewelry">Jewelry planner</a>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

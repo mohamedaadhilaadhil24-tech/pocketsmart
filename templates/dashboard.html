@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — PocketSmart AI{% endblock %}
+
+{% block content %}
+<div class="page-head">
+  <div>
+    <div class="eyebrow"><span class="dot"></span> Signed in as {{ user.username }}</div>
+    <h2>Good to see you, {{ user.username }}</h2>
+    <p>Pick a planner to generate a new plan, or revisit your recent recommendations below.</p>
+  </div>
+</div>
+
+<div class="stats reveal" style="margin-bottom:16px">
+  <div class="stat"><div class="num">{{ history|length }}</div><div class="lbl">Queries recorded</div><div class="sub">all time</div></div>
+  <div class="stat"><div class="num" data-count="3">0</div><div class="lbl">Planners available</div><div class="sub">home · party · jewelry</div></div>
+  <div class="stat"><div class="num" data-count="8" data-suffix="+">0</div><div class="lbl">Source platforms</div><div class="sub">Amazon, Flipkart, IKEA…</div></div>
+  <div class="stat"><div class="num" data-count="100" data-suffix="%">0</div><div class="lbl">Budget adherence</div><div class="sub">every plan</div></div>
+</div>
+
+<div class="grid reveal" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr));margin-bottom:16px">
+  <div class="metric">
+    <div class="metric-row">
+      <div class="ring" style="--p:{{ ([history|length * 10, 100]|min) }}"><span>{{ history|length }}</span></div>
+      <span class="icon-btn" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M4 7h3M11 7h9M4 17h9M17 17h3"/><circle cx="9" cy="7" r="2"/><circle cx="15" cy="17" r="2"/></svg>
+      </span>
+    </div>
+    <div class="cap">Plans generated</div>
+    <div class="when">saved to history</div>
+  </div>
+  <div class="metric">
+    <div class="metric-row">
+      <div class="val">₹{{ "%.0f"|format(history|map(attribute='budget')|sum / 1000) }}<span class="u">k</span></div>
+      <span class="icon-btn" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M4 7h3M11 7h9M4 17h9M17 17h3"/><circle cx="9" cy="7" r="2"/><circle cx="15" cy="17" r="2"/></svg>
+      </span>
+    </div>
+    <div class="cap">Budget planned</div>
+    <div class="when">across all queries</div>
+  </div>
+</div>
+
+<div class="dots-card reveal" style="margin-bottom:34px">
+  <div class="dots-months"><span>Jan</span><span>Feb</span><span>Mar</span></div>
+  <div class="dots-grid" data-activity="{{ history|length }}"></div>
+  <div class="dots-foot">
+    <div class="ring sm" style="--p:{{ ([history|length * 10, 100]|min) }}"><span>{{ history|length }}</span></div>
+    <div>
+      <div class="t">Activity</div>
+      <div class="s">{{ history|length }} {{ 'query' if history|length == 1 else 'queries' }} recorded · {{ (history|map(attribute='domain')|list|unique)|join(', ') or '—' }}</div>
+    </div>
+  </div>
+</div>
+
+<div class="section-head reveal">
+  <div>
+    <span class="kicker">// engines</span>
+    <h2>Planners</h2>
+  </div>
+</div>
+
+<div class="grid">
+  <div class="card tile reveal">
+    <div class="icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M10 21v-6h4v6"/></svg>
+    </div>
+    <h3>Home interior</h3>
+    <p>Budget-aware furniture, lighting and decor selections across multiple retailers.</p>
+    <div class="foot">
+      <a class="card-link" href="/planner/home">Open planner</a>
+      <span class="arrow">→</span>
+    </div>
+  </div>
+
+  <div class="card tile reveal">
+    <div class="icon violet">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>
+    </div>
+    <h3>Party budget</h3>
+    <p>Proportional allocation across catering, decoration and entertainment.</p>
+    <div class="foot">
+      <a class="card-link" href="/planner/party">Open planner</a>
+      <span class="arrow">→</span>
+    </div>
+  </div>
+
+  <div class="card tile reveal">
+    <div class="icon green">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3"/></svg>
+    </div>
+    <h3>Jewelry stylist</h3>
+    <p>Occasion-matched jewelry, coordinated with an optional outfit image.</p>
+    <div class="foot">
+      <a class="card-link" href="/planner/jewelry">Open planner</a>
+      <span class="arrow">→</span>
+    </div>
+  </div>
+</div>
+
+<div style="height:52px"></div>
+
+<div class="section-head reveal">
+  <div>
+    <span class="kicker">// activity</span>
+    <h2>Recent recommendations</h2>
+  </div>
+  {% if history %}
+    <a class="btn btn-ghost btn-sm" href="/history">View all →</a>
+  {% endif %}
+</div>
+
+{% if history %}
+  <div class="table-wrap reveal">
+    <table>
+      <thead>
+        <tr><th>Domain</th><th>Budget</th><th>Items</th><th>Summary</th><th>Date</th></tr>
+      </thead>
+      <tbody>
+        {% for h in history[:8] %}
+        <tr>
+          <td style="text-transform:capitalize;font-weight:550">{{ h.domain }}</td>
+          <td class="mono">₹{{ h.budget|inr }}</td>
+          <td class="mono">{{ h.item_count }}</td>
+          <td class="muted">{{ h.summary[:64] }}{% if h.summary|length > 64 %}…{% endif %}</td>
+          <td class="muted mono">{{ h.created_at[:10] }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% else %}
+  <div class="empty reveal">
+    <div class="ic">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 1.9"/></svg>
+    </div>
+    <h4>No history yet</h4>
+    <p>Run your first plan using one of the planners above — every query is logged here automatically.</p>
+  </div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,244 @@
+{% extends "base.html" %}
+{% block title %}PocketSmart AI — Overview{% endblock %}
+
+{% block content %}
+<!-- ============ HERO BAND ============ -->
+<section class="hero-band">
+  <div class="spot" id="hero-spot" aria-hidden="true"></div>
+  <span class="wm" aria-hidden="true">₹</span>
+
+  <div class="eyebrow"><span class="dot"></span> GenAI recommendation engine</div>
+
+  <h1>
+    <span class="l">Every budget,</span>
+    <span class="l grad-text">planned to the rupee.</span>
+  </h1>
+
+  <p class="sub">
+    Structured, shoppable plans across interiors, events and jewelry —
+    sourced from the platforms you already buy from.
+  </p>
+
+  <div class="hero-actions">
+    {% if user %}
+      <a class="btn btn-primary magnetic" href="/planner/home">Start a plan</a>
+      <a class="btn btn-ghost magnetic" href="/dashboard">Open dashboard</a>
+    {% else %}
+      <a class="btn btn-primary magnetic" href="/register">Get started free</a>
+      <a class="btn btn-ghost magnetic" href="/login">Sign in</a>
+    {% endif %}
+  </div>
+
+  <div class="stat-row">
+    <div class="sr"><div class="v" data-count="3">0</div><div class="k">Planners</div></div>
+    <div class="sr"><div class="v" data-count="8" data-suffix="+">0</div><div class="k">Source platforms</div></div>
+    <div class="sr"><div class="v" data-count="100" data-suffix="%">0</div><div class="k">Budget adherence</div></div>
+    <div class="sr"><div class="v" data-count="4" data-suffix="s">0</div><div class="k">Avg. response</div></div>
+  </div>
+</section>
+
+<!-- ============ PLANNERS ============ -->
+<div style="height:34px"></div>
+
+<div class="section-head reveal">
+  <div>
+    <span class="kicker">// planners</span>
+    <h2>Choose an engine</h2>
+    <p>Set a number, describe the occasion, get a plan you can act on.</p>
+  </div>
+</div>
+
+<div class="grid">
+  <div class="card tile reveal">
+    <div class="icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M10 21v-6h4v6"/></svg>
+    </div>
+    <h3>Home interior</h3>
+    <p>Budget and room inventory in — cost-effective selections balanced across lighting, furniture and decor.</p>
+    <div class="foot">
+      <a class="card-link" href="/planner/home">Open planner</a>
+      <span class="arrow">→</span>
+    </div>
+  </div>
+
+  <div class="card tile reveal">
+    <div class="icon violet">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>
+    </div>
+    <h3>Party budgeting</h3>
+    <p>Guest count, event type and venue — the budget splits proportionally across catering, decor and entertainment.</p>
+    <div class="foot">
+      <a class="card-link" href="/planner/party">Open planner</a>
+      <span class="arrow">→</span>
+    </div>
+  </div>
+
+  <div class="card tile reveal">
+    <div class="icon green">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg>
+    </div>
+    <h3>Jewelry matching</h3>
+    <p>Occasion and style set — attach an outfit image and the model coordinates colour and aesthetic.</p>
+    <div class="foot">
+      <a class="card-link" href="/planner/jewelry">Open planner</a>
+      <span class="arrow">→</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============ PIPELINE ============ -->
+<div style="height:52px"></div>
+
+<div class="section-head reveal">
+  <div>
+    <span class="kicker">// pipeline</span>
+    <h2>How it works</h2>
+    <p>Four steps from a raw number to an actionable list.</p>
+  </div>
+</div>
+
+<div class="process">
+  <div class="step reveal">
+    <span class="n">01</span>
+    <h4>Define budget</h4>
+    <p>Enter a total, pick rooms or an occasion, list quantities.</p>
+  </div>
+  <div class="step reveal">
+    <span class="n">02</span>
+    <h4>Model reads context</h4>
+    <p>Prices, style, guest count — plus image input when supplied.</p>
+  </div>
+  <div class="step reveal">
+    <span class="n">03</span>
+    <h4>Structured split</h4>
+    <p>Budget distributes by category so no line item breaks the plan.</p>
+  </div>
+  <div class="step reveal">
+    <span class="n">04</span>
+    <h4>Shop the result</h4>
+    <p>Every suggestion carries price, rationale and platform link.</p>
+  </div>
+</div>
+
+<!-- ============ RECENT (logged in) ============ -->
+{% if user and history %}
+<div style="height:52px"></div>
+
+<div class="section-head reveal">
+  <div>
+    <span class="kicker">// activity</span>
+    <h2>Your numbers</h2>
+  </div>
+  <a class="btn btn-ghost btn-sm" href="/history">View all →</a>
+</div>
+
+<div class="grid reveal" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr))">
+  <div class="metric">
+    <div class="metric-row">
+      <div class="ring" style="--p:{{ ([history|length * 10, 100]|min) }}"><span>{{ history|length }}</span></div>
+      <span class="icon-btn" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M4 7h3M11 7h9M4 17h9M17 17h3"/><circle cx="9" cy="7" r="2"/><circle cx="15" cy="17" r="2"/></svg>
+      </span>
+    </div>
+    <div class="cap">Plans generated</div>
+    <div class="when">saved to history</div>
+  </div>
+
+  <div class="metric">
+    <div class="metric-row">
+      <div class="val">₹{{ "%.0f"|format(history|map(attribute='budget')|sum / 1000) }}<span class="u">k</span></div>
+      <span class="icon-btn" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M4 7h3M11 7h9M4 17h9M17 17h3"/><circle cx="9" cy="7" r="2"/><circle cx="15" cy="17" r="2"/></svg>
+      </span>
+    </div>
+    <div class="cap">Budget planned</div>
+    <div class="when">across all queries</div>
+  </div>
+
+  <div class="metric">
+    <div class="metric-row">
+      <div class="val">{{ history[0].item_count }}<span class="u">items</span></div>
+      <span class="icon-btn" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M4 7h3M11 7h9M4 17h9M17 17h3"/><circle cx="9" cy="7" r="2"/><circle cx="15" cy="17" r="2"/></svg>
+      </span>
+    </div>
+    <div class="cap">Last plan size</div>
+    <div class="when">{{ history[0].domain }}</div>
+  </div>
+</div>
+
+<div style="height:14px"></div>
+
+<div class="dots-card reveal">
+  <div class="dots-months"><span>Jan</span><span>Feb</span><span>Mar</span></div>
+  <div class="dots-grid" data-activity="{{ history|length }}"></div>
+  <div class="dots-foot">
+    <div class="ring sm" style="--p:{{ ([history|length * 10, 100]|min) }}"><span>{{ history|length }}</span></div>
+    <div>
+      <div class="t">Recommendation history</div>
+      <div class="s">{{ history|length }} {{ 'query' if history|length == 1 else 'queries' }} recorded · {{ history[0].domain }} last</div>
+    </div>
+  </div>
+</div>
+
+<div style="height:52px"></div>
+
+<div class="section-head reveal">
+  <div>
+    <span class="kicker">// records</span>
+    <h2>Recent plans</h2>
+  </div>
+</div>
+
+<div class="table-wrap reveal">
+  <table>
+    <thead>
+      <tr><th>Domain</th><th>Budget</th><th>Items</th><th>Summary</th><th>Date</th></tr>
+    </thead>
+    <tbody>
+      {% for h in history[:5] %}
+      <tr>
+        <td style="text-transform:capitalize;font-weight:550">{{ h.domain }}</td>
+        <td class="mono">₹{{ h.budget|inr }}</td>
+        <td class="mono">{{ h.item_count }}</td>
+        <td class="muted">{{ h.summary[:64] }}{% if h.summary|length > 64 %}…{% endif %}</td>
+        <td class="muted mono">{{ h.created_at[:10] }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+
+<!-- ============ PLATFORMS ============ -->
+<div style="height:44px"></div>
+<div class="strip reveal">
+  <div class="strip-inner">
+    <span>Amazon</span><span>Flipkart</span><span>IKEA</span>
+    <span>Swiggy</span><span>Zomato</span><span>OYO</span>
+    <span>Myntra</span><span>Ajio</span>
+  </div>
+</div>
+
+<!-- ============ CTA ============ -->
+<div style="height:44px"></div>
+<section class="hero-band reveal" style="padding:34px">
+  <div>
+    <h2 style="font-size:clamp(1.4rem,2.8vw,1.95rem);margin-bottom:12px">
+      Ready to plan <span class="grad-text">smarter</span>?
+    </h2>
+    <p class="sub" style="margin-bottom:22px">
+      Create an account to save recommendation history and revisit plans whenever the budget changes.
+    </p>
+    <div class="hero-actions">
+      {% if not user %}
+        <a class="btn btn-primary magnetic" href="/register">Create free account</a>
+        <a class="btn btn-ghost magnetic" href="/testimonials">Read case studies</a>
+      {% else %}
+        <a class="btn btn-primary magnetic" href="/dashboard">Go to dashboard</a>
+        <a class="btn btn-ghost magnetic" href="/history">View history</a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}

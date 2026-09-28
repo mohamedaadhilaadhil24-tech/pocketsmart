@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Create account — PocketSmart AI{% endblock %}
+
+{% block content %}
+<div class="auth">
+  <aside class="auth-aside">
+    <div class="eyebrow"><span class="dot"></span> Free forever</div>
+    <h1>Stop guessing. <span class="grad-text">Start allocating.</span></h1>
+    <p>Create an account and every plan you generate is saved, searchable and reusable.</p>
+    <ul class="auth-list">
+      <li><span class="tick">✓</span> Budget-adherent suggestions from real platforms</li>
+      <li><span class="tick">✓</span> Full history of every query you run</li>
+      <li><span class="tick">✓</span> Home, party and jewelry planners included</li>
+      <li><span class="tick">✓</span> No card, no trial, no limits</li>
+    </ul>
+  </aside>
+
+  <div class="auth-form-side">
+    <div class="form-card">
+      <div class="eyebrow"><span class="dot"></span> Get started</div>
+      <h2>Create account</h2>
+      <p class="sub">Takes less than a minute.</p>
+
+      <form id="register-form">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input id="username" name="username" type="text" minlength="3" required autocomplete="username" placeholder="your_username" />
+          <div class="hint">Minimum 3 characters.</div>
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" required autocomplete="email" placeholder="you@example.com" />
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" minlength="6" required autocomplete="new-password" placeholder="••••••••" />
+          <div class="hint">Minimum 6 characters.</div>
+        </div>
+        <div class="form-group" style="margin-top:24px">
+          <button class="btn btn-primary btn-block btn-submit" type="submit">Create account</button>
+        </div>
+      </form>
+
+      <p class="muted center" style="margin-top:18px;font-size:13.5px">
+        Already registered? <a href="/login">Sign in</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<div class="loading" id="loading"><div class="spinner"></div>Creating your account…</div>
+{% endblock %}

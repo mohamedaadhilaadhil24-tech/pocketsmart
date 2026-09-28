@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block title %}Home interior — PocketSmart AI{% endblock %}
+
+{% block content %}
+<div class="page-head">
+  <div class="head-row">
+    <div>
+      <div class="eyebrow"><span class="dot"></span> Planner · Home interior</div>
+      <h2>Home interior budget planner</h2>
+      <p>Set a budget, define rooms and quantities. The model returns cost-effective selections across IKEA, Amazon and Flipkart.</p>
+    </div>
+    <div class="segmented" role="tablist" aria-label="Planner">
+      <a class="seg active" href="/planner/home">Home</a>
+      <a class="seg" href="/planner/party">Party</a>
+      <a class="seg" href="/planner/jewelry">Jewelry</a>
+    </div>
+  </div>
+</div>
+
+<div class="workspace">
+  <!-- input -->
+  <div class="panel panel-sticky">
+    <div class="panel-head">
+      <h3>Inputs</h3>
+      <span class="tag">home</span>
+    </div>
+    <div class="panel-body">
+      <form id="home-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="budget">Total budget (₹)</label>
+            <input id="budget" name="budget" type="number" min="500" step="100" placeholder="50000" required />
+          </div>
+          <div class="form-group">
+            <label for="style">Style</label>
+            <select id="style" name="style">
+              <option value="modern">Modern</option>
+              <option value="minimalist">Minimalist</option>
+              <option value="traditional">Traditional</option>
+              <option value="contemporary">Contemporary</option>
+              <option value="industrial">Industrial</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Room types</label>
+          <div class="chips">
+            <label><input type="checkbox" name="room" value="Living Room" checked /> Living Room</label>
+            <label><input type="checkbox" name="room" value="Kitchen" /> Kitchen</label>
+            <label><input type="checkbox" name="room" value="Bedroom" /> Bedroom</label>
+            <label><input type="checkbox" name="room" value="Bathroom" /> Bathroom</label>
+            <label><input type="checkbox" name="room" value="Balcony" /> Balcony</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Items &amp; quantities</label>
+          <div id="item-rows">
+            <div class="item-row">
+              <input type="text" name="item-name" placeholder="Item name — e.g. ceiling lights" />
+              <input type="number" name="item-qty" min="1" value="4" aria-label="Quantity" />
+              <button type="button" class="btn btn-ghost remove-item" aria-label="Remove">×</button>
+            </div>
+            <div class="item-row">
+              <input type="text" name="item-name" placeholder="Item name — e.g. ceiling fans" />
+              <input type="number" name="item-qty" min="1" value="2" aria-label="Quantity" />
+              <button type="button" class="btn btn-ghost remove-item" aria-label="Remove">×</button>
+            </div>
+            <div class="item-row">
+              <input type="text" name="item-name" placeholder="Item name — e.g. dining table" />
+              <input type="number" name="item-qty" min="1" value="1" aria-label="Quantity" />
+              <button type="button" class="btn btn-ghost remove-item" aria-label="Remove">×</button>
+            </div>
+          </div>
+          <button type="button" id="add-item" class="btn btn-ghost btn-sm" style="margin-top:4px">+ Add item</button>
+        </div>
+
+        <div class="form-group" style="margin-top:24px">
+          <button class="btn btn-primary btn-block btn-submit" type="submit">Generate recommendations</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- output -->
+  <div>
+    <div class="loading" id="loading">
+      <div class="spinner"></div>
+      Analysing budget and sourcing options…
+    </div>
+
+    <div id="results">
+      <div class="empty">
+        <div class="ic">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>
+        </div>
+        <h4>No plan generated yet</h4>
+        <p>Fill in the budget, rooms and quantities on the left, then hit generate to see structured suggestions here.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  bindPlanner("home-form", "/generate-home", (form) => {
+    const items = [];
+    form.querySelectorAll("#item-rows .item-row").forEach((row) => {
+      const name = row.querySelector('[name="item-name"]').value.trim();
+      const qty = Number(row.querySelector('[name="item-qty"]').value || 1);
+      if (name) items.push({ name, quantity: qty });
+    });
+    const rooms = [...form.querySelectorAll('[name="room"]:checked')].map((c) => c.value);
+    return {
+      budget: Number(form.budget.value),
+      rooms: rooms.length ? rooms : ["Living Room"],
+      items,
+      style: form.style.value,
+    };
+  });
+</script>
+{% endblock %}

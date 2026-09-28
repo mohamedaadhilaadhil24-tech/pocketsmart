@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block title %}Jewelry matcher — PocketSmart AI{% endblock %}
+
+{% block content %}
+<div class="page-head">
+  <div class="head-row">
+    <div>
+      <div class="eyebrow"><span class="dot"></span> Planner · Multimodal</div>
+      <h2>Jewelry budget planner</h2>
+      <p>Budget, occasion and style — optionally attach an outfit image so the model coordinates colour and aesthetic.</p>
+    </div>
+    <div class="segmented" role="tablist" aria-label="Planner">
+      <a class="seg" href="/planner/home">Home</a>
+      <a class="seg" href="/planner/party">Party</a>
+      <a class="seg active" href="/planner/jewelry">Jewelry</a>
+    </div>
+  </div>
+</div>
+
+<div class="workspace">
+  <div class="panel panel-sticky">
+    <div class="panel-head">
+      <h3>Inputs</h3>
+      <span class="tag">jewelry</span>
+    </div>
+    <div class="panel-body">
+      <form id="jewelry-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="budget">Total budget (₹)</label>
+            <input id="budget" name="budget" type="number" min="500" step="100" placeholder="25000" required />
+          </div>
+          <div class="form-group">
+            <label for="occasion">Occasion</label>
+            <select id="occasion" name="occasion">
+              <option value="wedding">Wedding</option>
+              <option value="engagement">Engagement</option>
+              <option value="party">Party</option>
+              <option value="festival">Festival</option>
+              <option value="office wear">Office wear</option>
+              <option value="casual">Casual</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="style">Style preference</label>
+          <select id="style" name="style">
+            <option value="traditional">Traditional</option>
+            <option value="modern">Modern</option>
+            <option value="minimalist">Minimalist</option>
+            <option value="ethnic">Ethnic</option>
+            <option value="fusion">Fusion</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="outfit">Outfit image <span class="opt">— optional</span></label>
+          <input id="outfit" name="outfit" type="file" accept="image/*" />
+          <div class="hint">Attach a photo of your outfit for colour-coordinated suggestions.</div>
+          <img id="preview" alt="Outfit preview" style="display:none;max-width:150px;margin-top:14px;border-radius:10px;border:1px solid var(--line-strong)" />
+        </div>
+
+        <div class="form-group" style="margin-top:24px">
+          <button class="btn btn-primary btn-block btn-submit" type="submit">Generate recommendations</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div>
+    <div class="loading" id="loading">
+      <div class="spinner"></div>
+      Coordinating jewellery with your outfit and budget…
+    </div>
+
+    <div id="results">
+      <div class="empty">
+        <div class="ic">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3"/></svg>
+        </div>
+        <h4>No suggestions yet</h4>
+        <p>Set budget, occasion and style — add an outfit photo for better colour coordination.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  let imageBase64 = null;
+  const fileInput = document.getElementById("outfit");
+  const preview = document.getElementById("preview");
+
+  fileInput.addEventListener("change", () => {
+    const file = fileInput.files[0];
+    if (!file) { imageBase64 = null; preview.style.display = "none"; return; }
+    const reader = new FileReader();
+    reader.onload = () => {
+      imageBase64 = reader.result;
+      preview.src = reader.result;
+      preview.style.display = "block";
+      toast("Outfit image attached");
+    };
+    reader.readAsDataURL(file);
+  });
+
+  bindPlanner("jewelry-form", "/generate-jewelry", (form) => ({
+    budget: Number(form.budget.value),
+    occasion: form.occasion.value,
+    style: form.style.value,
+    outfit_image: imageBase64,
+  }));
+</script>
+{% endblock %}

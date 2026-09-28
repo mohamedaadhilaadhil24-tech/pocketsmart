@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="348 242 522 480" width="1044" height="960">
+  <g fill="#000000" fill-rule="evenodd">
+    <!-- right blade + main stem -->
+    <path d="M602 261
+             C707 322 799 409 847 489
+             L668 489
+             L652 600
+             L646 650
+             L610 697
+             L597 570
+             L597 267 Z
+             M664 348 L780 462 L664 462 Z"/>
+    <!-- left blade (crescent) -->
+    <path d="M596 263
+             C494 318 408 406 364 492
+             L470 514
+             C520 500 560 402 596 263 Z"/>
+    <!-- left leg -->
+    <path d="M494 448 L548 448 L542 552 L520 622 L494 540 Z"/>
+    <!-- left stem sliver -->
+    <path d="M556 548 L586 548 L582 596 L568 642 L556 596 Z"/>
+  </g>
+</svg>

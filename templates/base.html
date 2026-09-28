@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="PocketSmart AI — GenAI budget planner and product recommendation assistant." />
+  <meta name="theme-color" content="#000000" />
+  <title>{% block title %}PocketSmart AI{% endblock %}</title>
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg" />
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+
+  <div class="bg-field" aria-hidden="true"></div>
+  <div class="bg-grain" aria-hidden="true"></div>
+  <div class="progress" id="progress" aria-hidden="true"></div>
+  <div class="scrim" id="scrim" aria-hidden="true"></div>
+
+  <div class="app">
+
+    <!-- ============ SIDEBAR ============ -->
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="/">
+        <span class="mark">
+          <img src="/static/logo.svg" alt="" width="22" height="22" />
+        </span>
+        PocketSmart <em>AI</em>
+      </a>
+
+      <div class="side-label">Overview</div>
+      <a class="nav-item {{ 'active' if active_nav == 'home' else '' }}" href="/">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>
+        Home
+      </a>
+      <a class="nav-item {{ 'active' if active_nav == 'dashboard' else '' }}" href="/dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+        Dashboard
+      </a>
+      <a class="nav-item {{ 'active' if active_nav == 'history' else '' }}" href="/history">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 1.9"/></svg>
+        History
+      </a>
+
+      <div class="side-label">Planners</div>
+      <a class="nav-item {{ 'active' if active_nav == 'planner-home' else '' }}" href="/planner/home">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M10 21v-6h4v6"/></svg>
+        Home interior
+      </a>
+      <a class="nav-item {{ 'active' if active_nav == 'planner-party' else '' }}" href="/planner/party">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>
+        Party budget
+      </a>
+      <a class="nav-item {{ 'active' if active_nav == 'planner-jewelry' else '' }}" href="/planner/jewelry">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3"/></svg>
+        Jewelry matcher
+      </a>
+
+      <div class="side-label">Account</div>
+      <a class="nav-item {{ 'active' if active_nav == 'testimonials' else '' }}" href="/testimonials">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Testimonials
+      </a>
+
+      <div class="side-spacer"></div>
+
+      {% if user %}
+        <div class="side-card">
+          <h4>3 planners ready</h4>
+          <p>Set a budget and let the model structure the rest.</p>
+          <a class="btn btn-primary btn-sm btn-block" href="/planner/home">Start planning</a>
+        </div>
+        <div class="user-chip">
+          <div class="av">{{ user.username[:2]|upper }}</div>
+          <div>
+            <div class="nm">{{ user.username }}</div>
+            <div class="rl">Signed in</div>
+          </div>
+          <button class="out" id="logout-btn" title="Log out" aria-label="Log out">⎋</button>
+        </div>
+      {% else %}
+        <div class="side-card">
+          <h4>Create a free account</h4>
+          <p>Save recommendation history and revisit plans anytime.</p>
+          <a class="btn btn-primary btn-sm btn-block" href="/register">Get started</a>
+        </div>
+        <a class="nav-item" href="/login">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="m10 17 5-5-5-5M15 12H3"/></svg>
+          Sign in
+        </a>
+      {% endif %}
+    </aside>
+
+    <!-- ============ MAIN ============ -->
+    <div class="main">
+      <header class="topbar">
+        <div class="title-group">
+          <button class="burger" id="burger" aria-label="Toggle navigation">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+          </button>
+          <div style="min-width:0">
+            <nav class="crumbs hide-sm" aria-label="Breadcrumb">
+              <a href="/">PocketSmart</a>
+              <span class="sep">/</span>
+              <span class="cur">{{ page_title|default('Overview') }}</span>
+            </nav>
+            <div class="page-title">{{ page_title|default('Overview') }}</div>
+          </div>
+        </div>
+        <div class="top-actions">
+          <span class="badge badge-gemini hide-sm">Gemini</span>
+          <a class="icon-btn" href="/history" title="History" aria-label="History">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 7h3M11 7h9M4 17h9M17 17h3"/><circle cx="9" cy="7" r="2"/><circle cx="15" cy="17" r="2"/>
+            </svg>
+          </a>
+          <a class="icon-btn accent" href="{{ '/planner/home' if user else '/register' }}" title="New plan" aria-label="New plan">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+          </a>
+        </div>
+      </header>
+
+      <main class="content">
+        {% block content %}{% endblock %}
+      </main>
+
+      <footer class="footer">
+        <div class="footer-inner">
+          <div>&copy; 2026 PocketSmart AI</div>
+          <div class="footer-links">
+            <a href="/planner/home">Home</a>
+            <a href="/planner/party">Party</a>
+            <a href="/planner/jewelry">Jewelry</a>
+            <a href="/testimonials">Testimonials</a>
+          </div>
+          <div style="opacity:.7">Gemini · FastAPI</div>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- bottom tab bar (mobile) -->
+  <nav class="tabbar" aria-label="Primary">
+    <a class="{{ 'active' if active_nav == 'home' else '' }}" href="/">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/></svg>
+      Home
+    </a>
+    <a class="{{ 'active' if active_nav == 'dashboard' else '' }}" href="/dashboard">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>
+      Dashboard
+    </a>
+    <a class="{{ 'active' if active_nav == 'history' else '' }}" href="/history">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20V11M11 20V5M17 20v-6"/></svg>
+      History
+    </a>
+    <a class="{{ 'active' if active_nav == 'testimonials' else '' }}" href="/testimonials">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Feedback
+    </a>
+  </nav>
+
+  <div id="toast" class="toast"></div>
+  <script src="/static/js/app.js"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

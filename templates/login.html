@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Sign in — PocketSmart AI{% endblock %}
+
+{% block content %}
+<div class="auth">
+  <aside class="auth-aside">
+    <div class="eyebrow"><span class="dot"></span> Welcome back</div>
+    <h1>Your plans, <span class="grad-text">where you left them.</span></h1>
+    <p>Sign in to load saved budgets, recommendation history and personalised suggestions.</p>
+    <ul class="auth-list">
+      <li><span class="tick">✓</span> Full access to all three budget planners</li>
+      <li><span class="tick">✓</span> Persistent recommendation history</li>
+      <li><span class="tick">✓</span> Multimodal input — upload an outfit image</li>
+      <li><span class="tick">✓</span> Sources across Amazon, Flipkart, IKEA and more</li>
+    </ul>
+  </aside>
+
+  <div class="auth-form-side">
+    <div class="form-card">
+      <div class="eyebrow"><span class="dot"></span> Account access</div>
+      <h2>Sign in</h2>
+      <p class="sub">Enter your credentials to continue.</p>
+
+      <form id="login-form">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input id="username" name="username" type="text" required autocomplete="username" placeholder="your_username" />
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" required autocomplete="current-password" placeholder="••••••••" />
+        </div>
+        <div class="form-group" style="margin-top:24px">
+          <button class="btn btn-primary btn-block btn-submit" type="submit">Sign in</button>
+        </div>
+      </form>
+
+      <p class="muted center" style="margin-top:18px;font-size:13.5px">
+        No account yet? <a href="/register">Create one</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<div class="loading" id="loading"><div class="spinner"></div>Signing you in…</div>
+{% endblock %}

@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% block title %}Party budget — PocketSmart AI{% endblock %}
+
+{% block content %}
+<div class="page-head">
+  <div class="head-row">
+    <div>
+      <div class="eyebrow"><span class="dot"></span> Planner · Events</div>
+      <h2>Party budget planner</h2>
+      <p>Budget, guest count and venue in — the allocation distributes across catering, decoration and entertainment.</p>
+    </div>
+    <div class="segmented" role="tablist" aria-label="Planner">
+      <a class="seg" href="/planner/home">Home</a>
+      <a class="seg active" href="/planner/party">Party</a>
+      <a class="seg" href="/planner/jewelry">Jewelry</a>
+    </div>
+  </div>
+</div>
+
+<div class="workspace">
+  <div class="panel panel-sticky">
+    <div class="panel-head">
+      <h3>Inputs</h3>
+      <span class="tag">party</span>
+    </div>
+    <div class="panel-body">
+      <form id="party-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="budget">Total budget (₹)</label>
+            <input id="budget" name="budget" type="number" min="1000" step="500" placeholder="80000" required />
+          </div>
+          <div class="form-group">
+            <label for="guest_count">Guest count</label>
+            <input id="guest_count" name="guest_count" type="number" min="1" placeholder="40" required />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="event_type">Event type</label>
+            <select id="event_type" name="event_type">
+              <option value="birthday">Birthday</option>
+              <option value="corporate">Corporate</option>
+              <option value="wedding">Wedding</option>
+              <option value="anniversary">Anniversary</option>
+              <option value="baby shower">Baby shower</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="venue">Venue</label>
+            <select id="venue" name="venue">
+              <option value="home">Home</option>
+              <option value="banquet hall">Banquet hall</option>
+              <option value="restaurant">Restaurant</option>
+              <option value="rooftop">Rooftop</option>
+              <option value="hotel">Hotel</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Per-guest preset</label>
+          <div class="chips">
+            <label><input type="radio" name="preset" value="1000" /> ₹1,000</label>
+            <label><input type="radio" name="preset" value="1500" /> ₹1,500</label>
+            <label><input type="radio" name="preset" value="2500" /> ₹2,500</label>
+          </div>
+          <div class="hint">Pick a preset and the budget auto-fills from guest count.</div>
+        </div>
+
+        <div class="form-group" style="margin-top:24px">
+          <button class="btn btn-primary btn-block btn-submit" type="submit">Generate allocation</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div>
+    <div class="loading" id="loading">
+      <div class="spinner"></div>
+      Distributing budget across categories…
+    </div>
+
+    <div id="results">
+      <div class="empty">
+        <div class="ic">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>
+        </div>
+        <h4>No allocation yet</h4>
+        <p>Set your budget and guest count to see how the plan splits across catering, decor and entertainment.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const partyForm = document.getElementById("party-form");
+  partyForm.querySelectorAll('[name="preset"]').forEach((r) => {
+    r.addEventListener("change", () => {
+      const g = Number(partyForm.guest_count.value || 0);
+      if (g) partyForm.budget.value = g * Number(r.value);
+      else toast("Set guest count first to apply the preset");
+    });
+  });
+  partyForm.guest_count.addEventListener("input", () => {
+    const sel = partyForm.querySelector('[name="preset"]:checked');
+    if (sel) partyForm.budget.value = Number(partyForm.guest_count.value || 0) * Number(sel.value);
+  });
+
+  bindPlanner("party-form", "/generate-party", (form) => ({
+    budget: Number(form.budget.value),
+    guest_count: Number(form.guest_count.value),
+    event_type: form.event_type.value,
+    venue: form.venue.value,
+  }));
+</script>
+{% endblock %}
